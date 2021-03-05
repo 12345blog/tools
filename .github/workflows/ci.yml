@@ -48,7 +48,7 @@ jobs:
 #        run: yarn lint
 
       - name: Generate
-          run: yarn generate
+        run: yarn generate
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.0.0
