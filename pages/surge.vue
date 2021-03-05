@@ -1,12 +1,17 @@
 <template>
   <div class='mt-3 px-3'>
     <h1>
-      Surge
+      纯前端 Mac Surge 配置生成工具
     </h1>
 
-    <b-row class='mt-3'>
+    <p class='mt-3'>
+      在 <a target='_blank' href='https://github.com/12345blog/tools'>GitHub</a>
+      开源 —— 简单说明和描述写在了 README 里
+    </p>
+
+    <b-row class='mt-5'>
       <b-col sm='2'>
-        <label for='source'>输入：</label>
+        <label for='source'>输入机场节点列表</label>
       </b-col>
       <b-col sm='10'>
         <b-form-textarea
@@ -50,7 +55,7 @@
 
     <b-row class='mt-3'>
       <b-col sm='2'>
-        <label for='config'>Config</label>
+        <label for='config'>尚不完整的配置</label>
       </b-col>
       <b-col sm='10'>
         <b-form-textarea

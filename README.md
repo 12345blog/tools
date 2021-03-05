@@ -1,10 +1,18 @@
 # 私人武器库
 
-纯前端实现一些实用的一些小功能，尝试使用 [Nuxt.js](https://nuxtjs.org/) 搭建，如果对你也恰好有用，欢迎加星或提交代码。
+纯前端实现一些实用的一些小功能。
 
-## Mac Surge 配置整理
+- 基于 [Vue](https://vuejs.org/) 的开发框架 [Nuxt.js](https://nuxtjs.org/)
+- 使用 [BootstrapVue](https://bootstrap-vue.org/) 作为前端样式
+- 引入 [Stylus](https://www.stylus.com/) 做为 CSS 扩展
 
-- [x] 整理机场节点，在起始位置加上对应国家的 emoji 国旗
+------
+
+## 目前只有 1 个工具
+
+### 1. Mac Surge 配置生成工具
+
+- [x] 整理机场节点，在标题开头加上对应国家的 emoji 国旗
 - [ ] 按个人习惯生成以下配置组
   - [x] General
   - [x] Replica
@@ -16,7 +24,10 @@
   - [ ] MITM
   - [ ] Script
 
-## 暂时还没有其它
 
-------
-PEACE
+## 欢迎协作
+
+如果对你也恰好有用，欢迎：
+
+- 加星关注
+- 或提交代码
