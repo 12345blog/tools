@@ -5,6 +5,7 @@
 - 基于 [Vue](https://vuejs.org/) 的开发框架 [Nuxt.js](https://nuxtjs.org/)
 - 使用 [BootstrapVue](https://bootstrap-vue.org/) 作为前端样式
 - 引入 [Stylus](https://www.stylus.com/) 做为 CSS 扩展
+- 使用 [GitHub Actions](https://github.com/features/actions) 自动构建到 [gh-pages](https://github.com/12345blog/tools/tree/gh-pages) 分支
 
 ------
 
