@@ -1314,67 +1314,7 @@ export default {
     },
 
     proxyGroupTelegram() {
-      let list = ['select']
-
-      if (this.proxyGroupListEU.length) {
-        list = list.concat(this.proxyGroupListEU)
-      }
-
-      if (this.proxyGroupListHK.length) {
-        list = list.concat(this.proxyGroupListHK)
-      }
-
-      if (this.proxyGroupListUS.length) {
-        list = list.concat(this.proxyGroupListUS)
-      }
-
-      if (this.proxyGroupListTW.length) {
-        list = list.concat(this.proxyGroupListTW)
-      }
-
-      if (this.proxyGroupListSG.length) {
-        list = list.concat(this.proxyGroupListSG)
-      }
-
-      if (this.proxyGroupListJP.length) {
-        list = list.concat(this.proxyGroupListJP)
-      }
-
-      if (this.proxyGroupListKR.length) {
-        list = list.concat(this.proxyGroupListKR)
-      }
-
-      if (this.proxyGroupListCEN.length) {
-        list = list.concat(this.proxyGroupListCEN)
-      }
-
-      if (this.proxyGroupListSPEC.length) {
-        list = list.concat(this.proxyGroupListSPEC)
-      }
-
-      if (this.proxyGroupListNormal.length) {
-        list = list.concat(this.proxyGroupListNormal)
-      }
-
-      if (this.proxyGroupListCheap.length) {
-        list = list.concat(this.proxyGroupListCheap)
-      }
-
-      if (this.proxyGroupListExpensive.length) {
-        list = list.concat(this.proxyGroupListExpensive)
-      }
-
-      if (this.proxyGroupListAuto.length) {
-        list = list.concat(this.proxyGroupListAuto)
-      }
-
-      if (this.proxyGroupListONE.length) {
-        list = list.concat(this.proxyGroupListONE)
-      }
-
-      list.push('Domestic')
-
-      return 'Telegram = ' + list.join(', ')
+      return 'Telegram = ' + this.lineStartsWithHK
     },
 
     proxyGroupPayPal() {
