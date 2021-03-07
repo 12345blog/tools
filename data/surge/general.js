@@ -1,32 +1,30 @@
-const linesGeneral = [
-  '[General]',
-  'bypass-system = true',
-  'loglevel = notify',
-  'replica = false',
-  'dns-server = 119.29.29.29, 223.5.5.5, 223.6.6.6, system',
-  'skip-proxy = 127.0.0.1, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, localhost, *.local, *.crashlytics.com, *.edu.cn',
-  'tun-excluded-routes = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12',
-  'tun-included-routes = 192.168.1.12/32',
-  'always-real-ip = *.srv.nintendo.net, *.stun.playstation.net, xbox.*.microsoft.com, *.xboxlive.com',
-  'hijack-dns = 8.8.8.8:53, 8.8.4.4:53',
-  'http-listen = 0.0.0.0:8888',
-  'socks5-listen = 0.0.0.0:8889',
-  'wifi-access-http-port = 8888',
-  'wifi-access-socks5-port = 8889',
-  'external-controller-access = 24xcLLLiiqv6DCWTWmFtZJRA@0.0.0.0:6170',
-  'internet-test-url = http://wifi.vivo.com.cn/generate_204',
-  'proxy-test-url = http://cp.cloudflare.com/generate_204',
-  'test-timeout = 5',
-  'allow-wifi-access = true',
-  'exclude-simple-hostnames = true',
-  'ipv6 = false',
-  'network-framework = false',
-  'show-error-page-for-reject = true',
-  'tls-provider = default',
-  'use-default-policy-if-wifi-not-primary = false',
-  '# wifi-assist = true',
-  'geoip-maxmind-url = https://cdn.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/Country.mmdb',
-  'doh-server = https://dns.alidns.com/dns-query',
-]
+const GENERAL = '[General]\n' +
+  'bypass-system = true\n' +
+  'loglevel = notify\n' +
+  'replica = false\n' +
+  'dns-server = 119.29.29.29, 223.5.5.5, 223.6.6.6, system\n' +
+  'skip-proxy = 127.0.0.1, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, localhost, *.local, *.crashlytics.com, *.edu.cn\n' +
+  'tun-excluded-routes = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12\n' +
+  'tun-included-routes = 192.168.1.12/32\n' +
+  'always-real-ip = *.srv.nintendo.net, *.stun.playstation.net, xbox.*.microsoft.com, *.xboxlive.com\n' +
+  'hijack-dns = 8.8.8.8:53, 8.8.4.4:53\n' +
+  'http-listen = 0.0.0.0:8888\n' +
+  'socks5-listen = 0.0.0.0:8889\n' +
+  'wifi-access-http-port = 8888\n' +
+  'wifi-access-socks5-port = 8889\n' +
+  'external-controller-access = 24xcLLLiiqv6DCWTWmFtZJRA@0.0.0.0:6170\n' +
+  'internet-test-url = http://wifi.vivo.com.cn/generate_204\n' +
+  'proxy-test-url = http://cp.cloudflare.com/generate_204\n' +
+  'test-timeout = 5\n' +
+  'allow-wifi-access = true\n' +
+  'exclude-simple-hostnames = true\n' +
+  'ipv6 = false\n' +
+  'network-framework = false\n' +
+  'show-error-page-for-reject = true\n' +
+  'tls-provider = default\n' +
+  'use-default-policy-if-wifi-not-primary = false\n' +
+  '# wifi-assist = true\n' +
+  'geoip-maxmind-url = https://cdn.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/Country.mmdb\n' +
+  'doh-server = https://dns.alidns.com/dns-query'
 
-export default linesGeneral
+export default GENERAL

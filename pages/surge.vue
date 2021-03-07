@@ -52,7 +52,8 @@
     <b-row class="mt-3">
       <b-col sm="2">
         <label for="config"
-          >已生成配置文本：General, Replica, Proxy, Proxy Group</label
+          >已生成配置文本：General, Replica, Proxy, Proxy Group, Rule, Host, URL
+          Rewrite, Script, MITM</label
         >
       </b-col>
       <b-col sm="10">
@@ -705,8 +706,13 @@
 import FLAGS from '@/data/flags'
 import URL_TEST from '@/data/surge/urlTest'
 import { RE_EXPENSIVE, RE_CHEAP } from '@/data/re'
-import linesGeneral from "@/data/surge/general"
-import linesReplica from "@/data/surge/replica"
+import GENERAL from '@/data/surge/general'
+import REPLICA from '@/data/surge/replica'
+import RULE from '@/data/surge/rule'
+import HOST from '@/data/surge/host'
+import URL_REWRITE from '@/data/surge/urlRewrite'
+import SCRIPT from '@/data/surge/script'
+import MIIM from '@/data/surge/miim'
 
 const formatLine = function (line) {
   line = line.trim()
@@ -808,13 +814,23 @@ export default {
   computed: {
     config() {
       return (
-        linesGeneral.join('\n') +
+        GENERAL +
         '\n\n' +
-        linesReplica.join('\n') +
+        REPLICA +
         '\n\n' +
         this.configProxy +
         '\n\n' +
-        this.configProxyGroup
+        this.configProxyGroup +
+        '\n\n' +
+        RULE +
+        '\n\n' +
+        HOST +
+        '\n\n' +
+        URL_REWRITE +
+        '\n\n' +
+        SCRIPT +
+        '\n\n' +
+        MIIM
       )
     },
     configProxy() {
@@ -912,6 +928,9 @@ export default {
       }
       if (this.proxyGroupNormal) {
         lines.push(this.proxyGroupNormal)
+      }
+      if (this.proxyGroupCheap) {
+        lines.push(this.proxyGroupCheap)
       }
       if (this.proxyGroupAuto) {
         lines.push(this.proxyGroupAuto)
@@ -1372,7 +1391,7 @@ export default {
       return 'Spotify = ' + this.lineStartsWithUS
     },
     proxyGroupDisney() {
-      return 'YouTube = ' + this.lineStartsWithUS
+      return 'Disney = ' + this.lineStartsWithUS
     },
 
     proxyGroupSpeedTest() {
@@ -1600,10 +1619,21 @@ export default {
       return null
     },
 
+    proxyGroupCheap() {
+      if (this.selectedCheap.length) {
+        return (
+          'Cheap = ' +
+          ['url-test'].concat(this.selectedCheap, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
     proxyGroupAuto() {
       if (this.selectedAll.length) {
         return (
-          'Normal = ' +
+          'Auto = ' +
           ['url-test'].concat(this.selectedAll, URL_TEST).join(', ')
         )
       }

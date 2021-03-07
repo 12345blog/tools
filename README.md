@@ -13,16 +13,16 @@
 ### 1. 纯前端的 Surge 配置生成工具
 
 - [x] 整理机场节点，在标题开头加上对应国家的 emoji 国旗
-- [ ] 按个人习惯生成以下配置组
+- [x] 按个人习惯生成以下配置组
   - [x] General
   - [x] Replica
   - [x] Proxy
   - [x] Proxy Group
-  - [ ] Rule
-  - [ ] Host
-  - [ ] URL Rewrite
-  - [ ] MITM
-  - [ ] Script
+  - [x] Rule `基于洞主和原 YoYu 的规则，稍加了一些优化`
+  - [x] Host `洞主规则`
+  - [x] URL Rewrite `洞主规则`
+  - [x] Script `洞主规则`
+  - [x] MITM `洞主规则，替换了个人使用的证书`
 
 
 ## 欢迎协作

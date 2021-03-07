@@ -1,10 +1,7 @@
-const linesReplica = [
-  '[Replica]',
-  'hide-apple-request = true',
-  'hide-crashlytics-request = true',
-  'hide-udp = false',
-  'keyword-filter-type = none',
-  'hide-crash-reporter-request = 1',
-]
+const REPLICA = '[Replica]\n' +
+  'hide-apple-request = true\n' +
+  'hide-crashlytics-request = true\n' +
+  'hide-udp = false\n' +
+  'keyword-filter-type = false'
 
-export default linesReplica
+export default REPLICA
