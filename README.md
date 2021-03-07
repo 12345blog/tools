@@ -57,7 +57,7 @@ https://12345.blog/tools/surge/
 
 #### 如果有朋友有兴趣想优化它
 
-在这个文件里 [pages/surge.vue](tree/master/pages/surge.vue)
+在这个文件里 [pages/surge.vue](pages/surge.vue)
 
 
 ## 欢迎协作
