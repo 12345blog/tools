@@ -12,7 +12,7 @@
 
 ### 1. 纯前端的 Surge 配置生成工具
 
-本人在大陆使用使用两个机场 [DlerCloud][Dler] 和 [w8ves][w8ves] 互为备份，他们都有 IEPL/IPLC 和 BGP/NBGP 线路，[w8ves][w8ves] 还有低流量倍率的线路，大量密集的看 Netflix 或 YouTube 等也不用心疼流量使用。
+本人在大陆使用两个机场 [DlerCloud][Dler] 和 [w8ves][w8ves] 互为备份，他们都有 IEPL/IPLC 和 BGP/NBGP 线路，[w8ves][w8ves] 还有低流量倍率的线路，大量密集的看 Netflix 或 YouTube 等也不用心疼流量使用。
 
 我用 Mac Mini 长期开着 [Surge][Surge] 的网关模式，局域网内所有有需要的设备都可以经它自动走梯子出去，这个工具就是为了生成 [Surge][Surge] 规则而开发的。
 
