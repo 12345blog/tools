@@ -717,7 +717,7 @@ import RULE from '@/data/surge/rule'
 import HOST from '@/data/surge/host'
 import URL_REWRITE from '@/data/surge/urlRewrite'
 import SCRIPT from '@/data/surge/script'
-import MIIM from '@/data/surge/miim'
+import MITM from '@/data/surge/mitm'
 
 const formatLine = function (line) {
   line = line.trim()
@@ -835,7 +835,7 @@ export default {
         '\n\n' +
         SCRIPT +
         '\n\n' +
-        MIIM
+        MITM
       )
     },
     configProxy() {
