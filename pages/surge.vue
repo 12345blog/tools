@@ -3,8 +3,13 @@
     <h1>纯前端的 Surge 配置生成工具</h1>
 
     <p class="mt-3">
-      在 <a target="_blank" href="https://github.com/12345blog/tools">GitHub</a>
-      开源 —— 简单说明和描述写在了 README 里
+      已在
+      <a target="_blank" href="https://github.com/12345blog/tools">GitHub</a>
+      开源，<a
+        target="_blank"
+        href="https://github.com/12345blog/tools#1-%E7%BA%AF%E5%89%8D%E7%AB%AF%E7%9A%84-surge-%E9%85%8D%E7%BD%AE%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7"
+        >查看说明？点此</a
+      >
     </p>
 
     <b-row class="mt-5">
@@ -1633,8 +1638,7 @@ export default {
     proxyGroupAuto() {
       if (this.selectedAll.length) {
         return (
-          'Auto = ' +
-          ['url-test'].concat(this.selectedAll, URL_TEST).join(', ')
+          'Auto = ' + ['url-test'].concat(this.selectedAll, URL_TEST).join(', ')
         )
       }
 
