@@ -1,322 +1,723 @@
 <template>
-  <div class='mt-3 px-3'>
-    <h1>
-      纯前端 Mac Surge 配置生成工具
-    </h1>
+  <div class="mt-3 px-3">
+    <h1>纯前端的 Surge 配置生成工具</h1>
 
-    <p class='mt-3'>
-      在 <a target='_blank' href='https://github.com/12345blog/tools'>GitHub</a>
+    <p class="mt-3">
+      在 <a target="_blank" href="https://github.com/12345blog/tools">GitHub</a>
       开源 —— 简单说明和描述写在了 README 里
     </p>
 
-    <b-row class='mt-5'>
-      <b-col sm='2'>
-        <label for='source'>输入机场节点列表</label>
+    <b-row class="mt-5">
+      <b-col sm="2">
+        <label for="source">粘入机场节点列表内容</label>
       </b-col>
-      <b-col sm='10'>
+      <b-col sm="10">
         <b-form-textarea
-          rows='3'
-          id='source'
-          v-model='source'
-          placeholder='机场节点列表'
+          rows="3"
+          id="source"
+          v-model="source"
+          placeholder="机场节点列表。文本，逐行"
         ></b-form-textarea>
       </b-col>
     </b-row>
 
-    <b-row class='mt-3'>
-      <b-col sm='2'>
-        <label for='configProxy'>[Proxy]</label>
+    <b-row class="mt-3">
+      <b-col sm="2">
+        <label for="configProxy">[Proxy]</label>
       </b-col>
-      <b-col sm='10'>
+      <b-col sm="10">
         <b-form-textarea
-          rows='5'
-          id='output'
-          :value='configProxy'
-          placeholder='[Proxy] 配置'
+          rows="5"
+          id="output"
+          :value="configProxy"
           readonly
         ></b-form-textarea>
       </b-col>
     </b-row>
 
-    <b-row class='mt-3'>
-      <b-col sm='2'>
-        <label for='configProxyGroup'>[Proxy Group]</label>
+    <b-row class="mt-3">
+      <b-col sm="2">
+        <label for="configProxyGroup">[Proxy Group]</label>
       </b-col>
-      <b-col sm='10'>
+      <b-col sm="10">
         <b-form-textarea
-          rows='20'
-          id='output'
-          :value='configProxyGroup'
-          placeholder='[Proxy Group] 配置'
+          rows="25"
+          id="output"
+          :value="configProxyGroup"
           readonly
         ></b-form-textarea>
       </b-col>
     </b-row>
 
-    <b-row class='mt-3'>
-      <b-col sm='2'>
-        <label for='config'>尚不完整的配置</label>
+    <b-row class="mt-3">
+      <b-col sm="2">
+        <label for="config"
+          >已生成配置文本：General, Replica, Proxy, Proxy Group</label
+        >
       </b-col>
-      <b-col sm='10'>
+      <b-col sm="10">
         <b-form-textarea
-          rows='4'
-          id='config'
-          v-model='config'
-          placeholder='[Proxy] + [Proxy Group]'
+          rows="4"
+          id="config"
+          v-model="config"
           readonly
         ></b-form-textarea>
       </b-col>
     </b-row>
 
-    <div class='mt-3 row'>
+    <div class="mt-3 row">
+      <div class="col">
+        <!-- HK_IEPL -->
+        <b-form-group v-show="optionsHkIepl.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedHkIeplAll"
+              aria-describedby="selected-hk-iepl"
+              aria-controls="selected-hk-iepl"
+              @change="toggleSelectedHkIeplAll"
+            >
+              <b>HK_IEPL</b>
+            </b-form-checkbox>
+          </template>
 
-      <div class='col'>
-
-        <!-- HK -->
-        <b-form-group label='HK_IEPL' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedHkIepl'
-                                 :options='optionsHkIepl'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-hk-iepl'
-                                 stacked />
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-hk-iepl"
+              v-model="selectedHkIepl"
+              :options="optionsHkIepl"
+              :aria-describedby="ariaDescribedby"
+              name="selected-hk-iepl"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='HK_BGP' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedHkBgp'
-                                 :options='optionsHkBgp'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-hk-bgp'
-                                 stacked />
+        <!-- HK_BGP -->
+        <b-form-group v-show="optionsHkBgp.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedHkBgpAll"
+              aria-describedby="selected-hk-bgp"
+              aria-controls="selected-hk-bgp"
+              @change="toggleSelectedHkBgpAll"
+            >
+              <b>HK_BGP</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-hk-bgp"
+              v-model="selectedHkBgp"
+              :options="optionsHkBgp"
+              :aria-describedby="ariaDescribedby"
+              name="selected-hk-bgp"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='HK_Normal' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedHkNormal'
-                                 :options='optionsHkNormal'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-hk-normal'
-                                 stacked />
+        <!-- HK_Normal -->
+        <b-form-group v-show="optionsHkNormal.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedHkNormalAll"
+              aria-describedby="selected-hk-normal"
+              aria-controls="selected-hk-normal"
+              @change="toggleSelectedHkNormalAll"
+            >
+              <b>HK_Normal</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-hk-normal"
+              v-model="selectedHkNormal"
+              :options="optionsHkNormal"
+              :aria-describedby="ariaDescribedby"
+              name="selected-hk-normal"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='HK_Cheap' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedHkCheap'
-                                 :options='optionsHkCheap'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-hk-cheap'
-                                 stacked />
+        <!-- HK_Cheap -->
+        <b-form-group v-show="optionsHkCheap.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedHkCheapAll"
+              aria-describedby="selected-hk-cheap"
+              aria-controls="selected-hk-cheap"
+              @change="toggleSelectedHkCheapAll"
+            >
+              <b>HK_Cheap</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-hk-cheap"
+              v-model="selectedHkCheap"
+              :options="optionsHkCheap"
+              :aria-describedby="ariaDescribedby"
+              name="selected-hk-cheap"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <!-- US -->
-        <b-form-group label='US_IEPL_BGP' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedUsIeplBgp'
-                                 :options='optionsUsIeplBgp'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-us-iepl-bgp'
-                                 stacked />
+        <!-- TW_IEPL_BGP -->
+        <b-form-group v-show="optionsTwIeplBgp.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedTwIeplBgpAll"
+              aria-describedby="selected-tw-iepl-bgp"
+              aria-controls="selected-tw-iepl-bgp"
+              @change="toggleSelectedTwIeplBgpAll"
+            >
+              <b>TW_IEPL_BGP</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-tw-iepl-bgp"
+              v-model="selectedTwIeplBgp"
+              :options="optionsTwIeplBgp"
+              :aria-describedby="ariaDescribedby"
+              name="selected-tw-iepl-bgp"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='US_Normal' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedUsNormal'
-                                 :options='optionsUsNormal'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-us-normal'
-                                 stacked />
+        <!-- TW_Normal -->
+        <b-form-group v-show="optionsTwNormal.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedTwNormalAll"
+              aria-describedby="selected-tw-normal"
+              aria-controls="selected-tw-normal"
+              @change="toggleSelectedTwNormalAll"
+            >
+              <b>TW_Normal</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-tw-normal"
+              v-model="selectedTwNormal"
+              :options="optionsTwNormal"
+              :aria-describedby="ariaDescribedby"
+              name="selected-tw-normal"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='US_Cheap' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedUsCheap'
-                                 :options='optionsUsCheap'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-us-cheap'
-                                 stacked />
+        <!-- TW_Cheap -->
+        <b-form-group v-show="optionsTwCheap.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedTwCheapAll"
+              aria-describedby="selected-tw-cheap"
+              aria-controls="selected-tw-cheap"
+              @change="toggleSelectedTwCheapAll"
+            >
+              <b>TW_Cheap</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-tw-cheap"
+              v-model="selectedTwCheap"
+              :options="optionsTwCheap"
+              :aria-describedby="ariaDescribedby"
+              name="selected-tw-cheap"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
       </div>
 
+      <div class="col">
+        <!-- US_IEPL_BGP -->
+        <b-form-group v-show="optionsUsIeplBgp.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedUsIeplBgpAll"
+              aria-describedby="selected-us-iepl-bgp"
+              aria-controls="selected-us-iepl-bgp"
+              @change="toggleSelectedUsIeplBgpAll"
+            >
+              <b>US_IEPL_BGP</b>
+            </b-form-checkbox>
+          </template>
 
-      <div class='col'>
-        <!-- TW -->
-        <b-form-group label='TW_IEPL_BGP' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedTwIeplBgp'
-                                 :options='optionsTwIeplBgp'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-tw-iepl-bgp'
-                                 stacked />
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-us-iepl-bgp"
+              v-model="selectedUsIeplBgp"
+              :options="optionsUsIeplBgp"
+              :aria-describedby="ariaDescribedby"
+              name="selected-us-iepl-bgp"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='TW_Normal' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedTwNormal'
-                                 :options='optionsTwNormal'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-tw-normal'
-                                 stacked />
+        <!-- US_Normal -->
+        <b-form-group v-show="optionsUsNormal.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedUsNormalAll"
+              aria-describedby="selected-us-normal"
+              aria-controls="selected-us-normal"
+              @change="toggleSelectedUsNormalAll"
+            >
+              <b>US_Normal</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-us-normal"
+              v-model="selectedUsNormal"
+              :options="optionsUsNormal"
+              :aria-describedby="ariaDescribedby"
+              name="selected-us-normal"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <!-- SG -->
-        <b-form-group label='SG_IEPL_BGP' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedSgIeplBgp'
-                                 :options='optionsSgIeplBgp'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-sg-iepl-bgp'
-                                 stacked />
+        <!-- US_Cheap -->
+        <b-form-group v-show="optionsUsCheap.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedUsCheapAll"
+              aria-describedby="selected-us-cheap"
+              aria-controls="selected-us-cheap"
+              @change="toggleSelectedUsCheapAll"
+            >
+              <b>US_Cheap</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-us-cheap"
+              v-model="selectedUsCheap"
+              :options="optionsUsCheap"
+              :aria-describedby="ariaDescribedby"
+              name="selected-us-cheap"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='SG_Normal' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedSgNormal'
-                                 :options='optionsSgNormal'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-sg-normal'
-                                 stacked />
+        <!-- SG_IEPL_BGP -->
+        <b-form-group v-show="optionsSgIeplBgp.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedSgIeplBgpAll"
+              aria-describedby="selected-sg-iepl-bgp"
+              aria-controls="selected-sg-iepl-bgp"
+              @change="toggleSelectedSgIeplBgpAll"
+            >
+              <b>SG_IEPL_BGP</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-sg-iepl-bgp"
+              v-model="selectedSgIeplBgp"
+              :options="optionsSgIeplBgp"
+              :aria-describedby="ariaDescribedby"
+              name="selected-sg-iepl-bgp"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <!-- JP -->
-        <b-form-group label='JP_IEPL_BGP' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedJpIeplBgp'
-                                 :options='optionsJpIeplBgp'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-jp-iepl-bgp'
-                                 stacked />
+        <!-- SG_Normal -->
+        <b-form-group v-show="optionsSgNormal.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedSgNormalAll"
+              aria-describedby="selected-sg-normal"
+              aria-controls="selected-sg-normal"
+              @change="toggleSelectedSgNormalAll"
+            >
+              <b>SG_Normal</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-sg-normal"
+              v-model="selectedSgNormal"
+              :options="optionsSgNormal"
+              :aria-describedby="ariaDescribedby"
+              name="selected-sg-normal"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
-        <b-form-group label='JP_Normal' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedJpNormal'
-                                 :options='optionsJpNormal'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-jp-normal'
-                                 stacked />
+        <!-- SG_Cheap -->
+        <b-form-group v-show="optionsSgCheap.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedSgCheapAll"
+              aria-describedby="selected-sg-cheap"
+              aria-controls="selected-sg-cheap"
+              @change="toggleSelectedSgCheapAll"
+            >
+              <b>SG_Cheap</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-sg-cheap"
+              v-model="selectedSgCheap"
+              :options="optionsSgCheap"
+              :aria-describedby="ariaDescribedby"
+              name="selected-sg-cheap"
+              class="ml-2"
+              stacked
+            />
+          </template>
+        </b-form-group>
+
+        <!-- JP_IEPL_BGP -->
+        <b-form-group v-show="optionsJpIeplBgp.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedJpIeplBgpAll"
+              aria-describedby="selected-jp-iepl-bgp"
+              aria-controls="selected-jp-iepl-bgp"
+              @change="toggleSelectedJpIeplBgpAll"
+            >
+              <b>JP_IEPL_BGP</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-jp-iepl-bgp"
+              v-model="selectedJpIeplBgp"
+              :options="optionsJpIeplBgp"
+              :aria-describedby="ariaDescribedby"
+              name="selected-jp-iepl-bgp"
+              class="ml-2"
+              stacked
+            />
+          </template>
+        </b-form-group>
+
+        <!-- JP_Normal -->
+        <b-form-group v-show="optionsJpNormal.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedJpNormalAll"
+              aria-describedby="selected-jp-normal"
+              aria-controls="selected-jp-normal"
+              @change="toggleSelectedJpNormalAll"
+            >
+              <b>JP_Normal</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-jp-normal"
+              v-model="selectedJpNormal"
+              :options="optionsJpNormal"
+              :aria-describedby="ariaDescribedby"
+              name="selected-jp-normal"
+              class="ml-2"
+              stacked
+            />
+          </template>
+        </b-form-group>
+
+        <!-- JP_Cheap -->
+        <b-form-group v-show="optionsJpCheap.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedJpCheapAll"
+              aria-describedby="selected-jp-cheap"
+              aria-controls="selected-jp-cheap"
+              @change="toggleSelectedJpCheapAll"
+            >
+              <b>JP_Cheap</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-jp-cheap"
+              v-model="selectedJpCheap"
+              :options="optionsJpCheap"
+              :aria-describedby="ariaDescribedby"
+              name="selected-jp-cheap"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
         <!-- KR -->
-        <b-form-group label='KR' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedKr'
-                                 :options='optionsKr'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-kr'
-                                 stacked />
+        <b-form-group v-show="optionsKr.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedKrAll"
+              aria-describedby="selected-kr"
+              aria-controls="selected-kr"
+              @change="toggleSelectedKrAll"
+            >
+              <b>KR</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-kr"
+              v-model="selectedKr"
+              :options="optionsKr"
+              :aria-describedby="ariaDescribedby"
+              name="selected-kr"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
         <!-- EU -->
-        <b-form-group label='EU' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedEu'
-                                 :options='optionsEu'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-eu'
-                                 stacked />
+        <b-form-group v-show="optionsEu.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedEuAll"
+              aria-describedby="selected-eu"
+              aria-controls="selected-eu"
+              @change="toggleSelectedEuAll"
+            >
+              <b>EU</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-eu"
+              v-model="selectedEu"
+              :options="optionsEu"
+              :aria-describedby="ariaDescribedby"
+              name="selected-eu"
+              class="ml-2"
+              stacked
+            />
+          </template>
+        </b-form-group>
+      </div>
+
+      <div class="col">
+        <!-- Normal -->
+        <b-form-group v-show="optionsNormal.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedNormalAll"
+              aria-describedby="selected-normal"
+              aria-controls="selected-normal"
+              @change="toggleSelectedNormalAll"
+            >
+              <b>Normal</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-normal"
+              v-model="selectedNormal"
+              :options="optionsNormal"
+              :aria-describedby="ariaDescribedby"
+              name="selected-normal"
+              class="ml-2"
+              stacked
+            />
+          </template>
+        </b-form-group>
+
+        <!-- Cheap -->
+        <b-form-group v-show="optionsCheap.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedCheapAll"
+              aria-describedby="selected-normal"
+              aria-controls="selected-normal"
+              @change="toggleSelectedCheapAll"
+            >
+              <b>Cheap</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-normal"
+              v-model="selectedCheap"
+              :options="optionsCheap"
+              :aria-describedby="ariaDescribedby"
+              name="selected-normal"
+              class="ml-2"
+              stacked
+            />
+          </template>
+        </b-form-group>
+
+        <!-- Expensive -->
+        <b-form-group v-show="optionsExpensive.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedExpensiveAll"
+              aria-describedby="selected-expensive"
+              aria-controls="selected-expensive"
+              @change="toggleSelectedExpensiveAll"
+            >
+              <b>Expensive</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-expensive"
+              v-model="selectedExpensive"
+              :options="optionsExpensive"
+              :aria-describedby="ariaDescribedby"
+              name="selected-expensive"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
         <!-- CEN -->
-        <b-form-group label='CEN' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedCen'
-                                 :options='optionsCen'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-eu'
-                                 stacked />
-        </b-form-group>
+        <b-form-group v-show="optionsCen.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedCenAll"
+              aria-describedby="selected-cen"
+              aria-controls="selected-cen"
+              @change="toggleSelectedCenAll"
+            >
+              <b>CEN</b>
+            </b-form-checkbox>
+          </template>
 
-
-        <!-- EXPENSIVE -->
-        <b-form-group label='EXPENSIVE' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedExpensive'
-                                 :options='optionsExpensive'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-eu'
-                                 stacked />
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-cen"
+              v-model="selectedCen"
+              :options="optionsCen"
+              :aria-describedby="ariaDescribedby"
+              name="selected-cen"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
 
         <!-- SPEC -->
-        <b-form-group label='SPEC' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedSpec'
-                                 :options='optionsSpec'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-spec'
-                                 stacked
-          ></b-form-checkbox-group>
-        </b-form-group>
+        <b-form-group v-show="optionsSpec.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedSpecAll"
+              aria-describedby="selected-spec"
+              aria-controls="selected-spec"
+              @change="toggleSelectedSpecAll"
+            >
+              <b>SPEC</b>
+            </b-form-checkbox>
+          </template>
 
-      </div>
-
-      <!-- Normal -->
-      <div class='col'>
-        <b-form-group label='NORMAL' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedNormal'
-                                 :options='optionsNormal'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-others'
-                                 stacked />
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-spec"
+              v-model="selectedSpec"
+              :options="optionsSpec"
+              :aria-describedby="ariaDescribedby"
+              name="selected-spec"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
       </div>
 
       <!-- All -->
-      <div class='col'>
-        <b-form-group label='ALL' v-slot='{ ariaDescribedby }'>
-          <b-form-checkbox-group v-model='selectedAll'
-                                 :options='optionsAll'
-                                 :aria-describedby='ariaDescribedby'
-                                 name='selected-others'
-                                 stacked />
+      <div class="col">
+        <b-form-group v-show="optionsAll.length">
+          <template #label>
+            <b-form-checkbox
+              v-model="selectedAllAll"
+              aria-describedby="selected-all"
+              aria-controls="selected-all"
+              @change="toggleSelectedAllAll"
+            >
+              <b>ALL</b>
+            </b-form-checkbox>
+          </template>
+
+          <template v-slot="{ ariaDescribedby }">
+            <b-form-checkbox-group
+              id="selected-all"
+              v-model="selectedAll"
+              :options="optionsAll"
+              :aria-describedby="ariaDescribedby"
+              name="selected-all"
+              class="ml-2"
+              stacked
+            />
+          </template>
         </b-form-group>
       </div>
-
-
     </div>
   </div>
 </template>
 
 <script>
+import FLAGS from '@/data/flags'
+import URL_TEST from '@/data/surge/urlTest'
+import { RE_EXPENSIVE, RE_CHEAP } from '@/data/re'
+import linesGeneral from "@/data/surge/general"
+import linesReplica from "@/data/surge/replica"
 
-
-const PATT_EXPENSIVE = /\[[1-9].[0-9]\]/
-const PATT_CHEAP = /\[0.[0-9]\]/
-const URL_TEST = [
-  'url=http://cp.cloudflare.com/generate_204',
-  'interval=3600',
-  'tolerance=100',
-]
-
-const FLAGS = [
-  { key: '港', emoji: '🇭🇰 ' },
-  { key: '美', emoji: '🇺🇸 ' },
-  { key: '台', emoji: '🇨🇳 ' },
-  { key: '新', emoji: '🇸🇬 ' },
-  { key: '日', emoji: '🇯🇵 ' },
-  { key: '韩', emoji: '🇰🇷 ' },
-  { key: '德', emoji: '🇩🇪 ' },
-  { key: '英', emoji: '🇬🇧 ' },
-  { key: '法', emoji: '🇫🇷 ' },
-  { key: '印', emoji: '🇮🇳 ' },
-  { key: '泰', emoji: '🇹🇭 ' },
-  { key: '俄', emoji: '🇷🇺 ' },
-  { key: '土澳', emoji: '🇦🇺 ' },
-  { key: '澳大利亚', emoji: '🇦🇺 ' },
-  { key: '加拿大', emoji: '🇨🇦 ' },
-  { key: '土耳其', emoji: '🇹🇷 ' },
-  { key: '阿根廷', emoji: '🇦🇷 ' },
-  { key: '墨西哥', emoji: '🇲🇽 ' },
-  { key: '巴西', emoji: '🇧🇷 ' },
-  { key: '马来', emoji: '🇲🇾 ' },
-  { key: '迪拜', emoji: '🇦🇪 ' }
-]
-
-const HK = ['HK_IEPL', 'HK_BGP', 'HK_Normal', 'HK_Cheap']
-const US = ['US_IEPL_BGP', 'US_Normal', 'US_Normal']
-const TW = ['TW_IEPL_BGP', 'TW_Normal']
-const SG = ['SG_IEPL_BGP', 'SG_Normal']
-const JP = ['JP_IEPL_BGP', 'JP_Normal']
-const KR = ['KR']
-const EU = ['EU']
-const CEN = ['CEN']
-const EXPENSIVE = ['EXPENSIVE']
-const SPEC = ['SPEC']
-const NORMAL = ['NORMAL']
-const AUTO = ['AUTO']
-const ONE = ['ONE']
-
-
-const formatLine = function(line) {
+const formatLine = function (line) {
   line = line.trim()
 
   if (line) {
     if (line.indexOf('->') < 0) {
       for (let i = 0; i < FLAGS.length; i++) {
-        if (line.search(FLAGS[i].key) !== -1 && !line.startsWith(FLAGS[i].emoji)) {
+        if (
+          line.search(FLAGS[i].key) !== -1 &&
+          !line.startsWith(FLAGS[i].emoji)
+        ) {
           return FLAGS[i].emoji + line
         }
       }
@@ -334,207 +735,920 @@ export default {
     return {
       source: '',
 
-      selectedSpec: [],
-
       selectedHkIepl: [],
+      selectedHkIeplAll: true,
       selectedHkBgp: [],
+      selectedHkBgpAll: true,
       selectedHkNormal: [],
+      selectedHkNormalAll: true,
       selectedHkCheap: [],
+      selectedHkCheapAll: true,
 
       selectedUsIeplBgp: [],
+      selectedUsIeplBgpAll: true,
       selectedUsNormal: [],
+      selectedUsNormalAll: true,
       selectedUsCheap: [],
+      selectedUsCheapAll: true,
 
       selectedTwIeplBgp: [],
+      selectedTwIeplBgpAll: true,
       selectedTwNormal: [],
+      selectedTwNormalAll: true,
+      selectedTwCheap: [],
+      selectedTwCheapAll: true,
 
       selectedSgIeplBgp: [],
+      selectedSgIeplBgpAll: true,
       selectedSgNormal: [],
+      selectedSgNormalAll: true,
+      selectedSgCheap: [],
+      selectedSgCheapAll: true,
 
       selectedJpIeplBgp: [],
+      selectedJpIeplBgpAll: true,
       selectedJpNormal: [],
+      selectedJpNormalAll: true,
+      selectedJpCheap: [],
+      selectedJpCheapAll: true,
 
       selectedKr: [],
+      selectedKrAll: true,
       selectedEu: [],
+      selectedEuAll: true,
       selectedCen: [],
+      selectedCenAll: true,
       selectedExpensive: [],
+      selectedExpensiveAll: true,
+      selectedCheap: [],
+      selectedCheapAll: true,
+      selectedSpec: [],
+      selectedSpecAll: true,
 
       selectedAll: [],
-      selectedNormal: []
+      selectedAllAll: true,
+      selectedNormal: [],
+      selectedNormalAll: true,
     }
   },
   watch: {
     source() {
       let lines = []
 
-      this.source.split('\n').forEach(function(line) {
+      this.source.split('\n').forEach(function (line) {
         line = formatLine(line)
         if (line) {
           lines.push(line)
         }
-
-        console.log(line)
       })
 
       this.source = lines.join('\n')
-    }
+    },
   },
   computed: {
     config() {
-      return this.configGeneral + '\n\n' + this.configReplica + '\n\n' + this.configProxy + '\n\n' + this.configProxyGroup
+      return (
+        linesGeneral.join('\n') +
+        '\n\n' +
+        linesReplica.join('\n') +
+        '\n\n' +
+        this.configProxy +
+        '\n\n' +
+        this.configProxyGroup
+      )
     },
-    configGeneral() {
-      let configGeneral = [
-        '[General]',
-        'bypass-system = true',
-        'loglevel = notify',
-        'replica = false',
-        'dns-server = 119.29.29.29, 223.5.5.5, 223.6.6.6, system',
-        'skip-proxy = 127.0.0.1, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, localhost, *.local, *.crashlytics.com, *.edu.cn',
-        'tun-excluded-routes = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12',
-        'tun-included-routes = 192.168.1.12/32',
-        'always-real-ip = *.srv.nintendo.net, *.stun.playstation.net, xbox.*.microsoft.com, *.xboxlive.com',
-        'hijack-dns = 8.8.8.8:53, 8.8.4.4:53',
-        'http-listen = 0.0.0.0:8888',
-        'socks5-listen = 0.0.0.0:8889',
-        'wifi-access-http-port = 8888',
-        'wifi-access-socks5-port = 8889',
-        'external-controller-access = 24xcLLLiiqv6DCWTWmFtZJRA@0.0.0.0:6170',
-        'internet-test-url = http://wifi.vivo.com.cn/generate_204',
-        'proxy-test-url = http://cp.cloudflare.com/generate_204',
-        'test-timeout = 5',
-        'allow-wifi-access = true',
-        'exclude-simple-hostnames = true',
-        'ipv6 = false',
-        'network-framework = false',
-        'show-error-page-for-reject = true',
-        'tls-provider = default',
-        'use-default-policy-if-wifi-not-primary = false',
-        '# wifi-assist = true',
-        'geoip-maxmind-url = https://cdn.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/Country.mmdb',
-        'doh-server = https://dns.alidns.com/dns-query',
-      ]
-
-      return configGeneral.join('\n')
-    },
-    configReplica() {
-      let configReplica = [
-        '[Replica]',
-        'hide-apple-request = true',
-        'hide-crashlytics-request = true',
-        'hide-udp = false',
-        'keyword-filter-type = none',
-        'hide-crash-reporter-request = 1',
-      ]
-
-      return configReplica.join('\n')
-    },
-
     configProxy() {
       let configProxy = [
         '[Proxy]',
         'Direct = direct',
         'Reject = reject',
-        'TinyGIF = reject-tinygif'
+        'TinyGIF = reject-tinygif',
       ]
 
       configProxy.push(this.source)
 
       return configProxy.join('\n')
     },
-    configProxyGroup() {
-      const proxy = ['select'].concat(HK, US, TW, SG, JP, KR, EU, CEN, EXPENSIVE, SPEC, NORMAL, AUTO, ONE)
-      const domestic = ['select', 'Direct', 'Proxy']
-      const adBlock = ['select', 'TinyGIF', 'Reject', 'Domestic', 'Proxy', 'HK_Cheap']
-      const asianTV = ['select', 'Domestic'].concat(HK, TW, SG, JP, KR)
-      const globalTV = ['select'].concat(HK, US, TW, SG, JP, KR, EU, CEN, NORMAL, AUTO, ONE, ['Domestic'])
-      const apple = ['select', 'Domestic'].concat(HK, US, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE)
-      const microsoft = ['select', 'Domestic'].concat(HK, US, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE)
-      const google = ['select'].concat(HK, US, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE, ['Domestic'])
-      const telegram = ['select'].concat(EU, HK, US, TW, SG, JP, KR, NORMAL, AUTO, ONE, ['Domestic'])
-      const payPal = ['select'].concat(HK, US, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE, ['Domestic'])
-      const steam = ['select'].concat(HK, US, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE, ['Domestic'])
-      const netflix = ['select'].concat(HK, US, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE, ['Domestic'])
-      const youTube = ['select'].concat(US, HK, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE, ['Domestic'])
-      const spotify = ['select'].concat(US, HK, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE, ['Domestic'])
-      const disney = ['select'].concat(US, HK, TW, SG, JP, KR, EU, NORMAL, AUTO, ONE, ['Domestic'])
-      const speedTest = ['select', 'Direct'].concat(this.selectedAll)
-      const hkIepl = ['url-test'].concat(this.selectedHkIepl, URL_TEST)
-      const hkBgp = ['url-test'].concat(this.selectedHkBgp, URL_TEST)
-      const hkNormal = ['url-test'].concat(this.selectedHkNormal, URL_TEST)
-      const hkCheap = ['url-test'].concat(this.selectedHkCheap, URL_TEST)
-      const usIeplBgp = ['url-test'].concat(this.selectedUsIeplBgp, URL_TEST)
-      const usNormal = ['url-test'].concat(this.selectedUsNormal, URL_TEST)
-      const usCheap = ['url-test'].concat(this.selectedUsCheap, URL_TEST)
-      const twIeplBgp = ['url-test'].concat(this.selectedTwIeplBgp, URL_TEST)
-      const twNormal = ['url-test'].concat(this.selectedTwNormal, URL_TEST)
-      const sgIeplBgp = ['url-test'].concat(this.selectedSgIeplBgp, URL_TEST)
-      const sgNormal = ['url-test'].concat(this.selectedSgNormal, URL_TEST)
-      const jpIeplBgp = ['url-test'].concat(this.selectedJpIeplBgp, URL_TEST)
-      const jpNormal = ['url-test'].concat(this.selectedJpNormal, URL_TEST)
-      const kr = ['url-test'].concat(this.selectedKr, URL_TEST)
-      const eu = ['url-test'].concat(this.selectedEu, URL_TEST)
-      const cen = ['select'].concat(this.selectedCen)
-      const expensive = ['select'].concat(this.selectedExpensive)
-      const spec = ['url-test'].concat(this.selectedSpec, URL_TEST)
-      const normal = ['url-test'].concat(this.selectedNormal, URL_TEST)
-      const auto = ['url-test'].concat(this.selectedAll, URL_TEST)
-      const one = ['select'].concat(this.selectedAll)
 
-      return [
+    configProxyGroup() {
+      let lines = [
         '[Proxy Group]',
-        'Proxy = ' + proxy.join(', '),
-        'Domestic = ' + domestic.join(', '),
-        'AdBlock = ' + adBlock.join(', '),
-        'AsianTV = ' + asianTV.join(', '),
-        'GlobalTV = ' + globalTV.join(', '),
-        'Apple = ' + apple.join(', '),
-        'Microsoft = ' + microsoft.join(', '),
-        'Google = ' + google.join(', '),
-        'Telegram = ' + telegram.join(', '),
-        'PayPal = ' + payPal.join(', '),
-        'Steam = ' + steam.join(', '),
-        'Netflix = ' + netflix.join(', '),
-        'YouTube = ' + youTube.join(', '),
-        'Spotify = ' + spotify.join(', '),
-        'Disney = ' + disney.join(', '),
-        'SpeedTest = ' + speedTest.join(', '),
-        //
-        'HK_IEPL = ' + hkIepl.join(', '),
-        'HK_BGP = ' + hkBgp.join(', '),
-        'HK_Normal = ' + hkNormal.join(', '),
-        'HK_Cheap = ' + hkCheap.join(', '),
-        'US_IEPL_BGP = ' + usIeplBgp.join(', '),
-        'US_Normal = ' + usNormal.join(', '),
-        'US_Cheap = ' + usCheap.join(', '),
-        'TW_IEPL_BGP = ' + twIeplBgp.join(', '),
-        'TW_Normal = ' + twNormal.join(', '),
-        'SG_IEPL_BGP = ' + sgIeplBgp.join(', '),
-        'SG_Normal = ' + sgNormal.join(', '),
-        'JP_IEPL_BGP = ' + jpIeplBgp.join(', '),
-        'JP_Normal = ' + jpNormal.join(', '),
-        'KR = ' + kr.join(', '),
-        'EU = ' + eu.join(', '),
-        'CEN = ' + cen.join(', '),
-        'EXPENSIVE = ' + expensive.join(', '),
-        'SPEC = ' + spec.join(', '),
-        'NORMAL = ' + normal.join(', '),
-        'AUTO = ' + auto.join(', '),
-        'ONE = ' + one.join(', '),
-      ].join('\n')
+        '# 基础定义',
+        this.proxyGroupProxy,
+        this.proxyGroupDomestic,
+        this.proxyGroupAdBlock,
+        this.proxyGroupAsianTV,
+        this.proxyGroupGlobalTV,
+        this.proxyGroupApple,
+        this.proxyGroupMicrosoft,
+        this.proxyGroupGoogle,
+        this.proxyGroupTelegram,
+        this.proxyGroupPayPal,
+        this.proxyGroupSteam,
+        this.proxyGroupNetflix,
+        this.proxyGroupYouTube,
+        this.proxyGroupSpotify,
+        this.proxyGroupDisney,
+        '',
+        '# 经由 URL-TEST 的自动选择',
+      ]
+
+      if (this.proxyGroupHkIepl) {
+        lines.push(this.proxyGroupHkIepl)
+      }
+      if (this.proxyGroupHkBgp) {
+        lines.push(this.proxyGroupHkBgp)
+      }
+      if (this.proxyGroupHkNormal) {
+        lines.push(this.proxyGroupHkNormal)
+      }
+      if (this.proxyGroupHkCheap) {
+        lines.push(this.proxyGroupHkCheap)
+      }
+      if (this.proxyGroupUsIeplBgp) {
+        lines.push(this.proxyGroupUsIeplBgp)
+      }
+      if (this.proxyGroupUsNormal) {
+        lines.push(this.proxyGroupUsNormal)
+      }
+      if (this.proxyGroupUsCheap) {
+        lines.push(this.proxyGroupUsCheap)
+      }
+      if (this.proxyGroupTwIeplBgp) {
+        lines.push(this.proxyGroupTwIeplBgp)
+      }
+      if (this.proxyGroupTwNormal) {
+        lines.push(this.proxyGroupTwNormal)
+      }
+      if (this.proxyGroupTwCheap) {
+        lines.push(this.proxyGroupTwCheap)
+      }
+      if (this.proxyGroupSgIeplBgp) {
+        lines.push(this.proxyGroupSgIeplBgp)
+      }
+      if (this.proxyGroupSgNormal) {
+        lines.push(this.proxyGroupSgNormal)
+      }
+      if (this.proxyGroupSgCheap) {
+        lines.push(this.proxyGroupSgCheap)
+      }
+      if (this.proxyGroupJpIeplBgp) {
+        lines.push(this.proxyGroupJpIeplBgp)
+      }
+      if (this.proxyGroupJpNormal) {
+        lines.push(this.proxyGroupJpNormal)
+      }
+      if (this.proxyGroupJpCheap) {
+        lines.push(this.proxyGroupJpCheap)
+      }
+      if (this.proxyGroupKr) {
+        lines.push(this.proxyGroupKr)
+      }
+      if (this.proxyGroupEu) {
+        lines.push(this.proxyGroupEu)
+      }
+      if (this.proxyGroupSpec) {
+        lines.push(this.proxyGroupSpec)
+      }
+      if (this.proxyGroupNormal) {
+        lines.push(this.proxyGroupNormal)
+      }
+      if (this.proxyGroupAuto) {
+        lines.push(this.proxyGroupAuto)
+      }
+
+      lines = lines.concat(['', '# 手动选择'])
+      if (this.proxyGroupCen) {
+        lines.push(this.proxyGroupCen)
+      }
+      if (this.proxyGroupExpensive) {
+        lines.push(this.proxyGroupExpensive)
+      }
+      if (this.proxyGroupOne) {
+        lines.push(this.proxyGroupOne)
+      }
+      lines.push(this.proxyGroupSpeedTest)
+
+      return lines.join('\n')
     },
+
+    proxyGroupListHK() {
+      let list = []
+      if (this.selectedHkIepl.length) {
+        list.push('HK_IEPL')
+      }
+      if (this.selectedHkBgp.length) {
+        list.push('HK_BGP')
+      }
+      if (this.selectedHkNormal.length) {
+        list.push('HK_Normal')
+      }
+      if (this.selectedHkCheap.length) {
+        list.push('HK_Cheap')
+      }
+      return list
+    },
+
+    proxyGroupListUS() {
+      let list = []
+      if (this.selectedUsIeplBgp.length) {
+        list.push('US_IEPL_BGP')
+      }
+      if (this.selectedUsNormal.length) {
+        list.push('US_Normal')
+      }
+      if (this.selectedUsCheap.length) {
+        list.push('US_Cheap')
+      }
+      return list
+    },
+
+    proxyGroupListTW() {
+      let list = []
+      if (this.selectedTwIeplBgp.length) {
+        list.push('TW_IEPL_BGP')
+      }
+      if (this.selectedTwNormal.length) {
+        list.push('TW_Normal')
+      }
+      if (this.selectedTwCheap.length) {
+        list.push('TW_Cheap')
+      }
+      return list
+    },
+
+    proxyGroupListSG() {
+      let list = []
+      if (this.selectedSgIeplBgp.length) {
+        list.push('SG_IEPL_BGP')
+      }
+      if (this.selectedSgNormal.length) {
+        list.push('SG_Normal')
+      }
+      if (this.selectedSgCheap.length) {
+        list.push('SG_Cheap')
+      }
+      return list
+    },
+
+    proxyGroupListJP() {
+      let list = []
+      if (this.selectedJpIeplBgp.length) {
+        list.push('JP_IEPL_BGP')
+      }
+      if (this.selectedJpNormal.length) {
+        list.push('JP_Normal')
+      }
+      if (this.selectedJpCheap.length) {
+        list.push('JP_Cheap')
+      }
+
+      return list
+    },
+
+    proxyGroupListKR() {
+      let list = []
+      if (this.selectedKr.length) {
+        list.push('KR')
+      }
+      return list
+    },
+
+    proxyGroupListEU() {
+      let list = []
+      if (this.selectedEu.length) {
+        list.push('EU')
+      }
+      return list
+    },
+
+    proxyGroupListCEN() {
+      let list = []
+      if (this.selectedCen.length) {
+        list.push('CEN')
+      }
+      return list
+    },
+
+    proxyGroupListExpensive() {
+      let list = []
+      if (this.selectedExpensive.length) {
+        list.push('Expensive')
+      }
+      return list
+    },
+
+    proxyGroupListSPEC() {
+      let list = []
+      if (this.selectedSpec.length) {
+        list.push('SPEC')
+      }
+      return list
+    },
+
+    proxyGroupListNormal() {
+      let list = []
+      if (this.selectedNormal.length) {
+        list.push('Normal')
+      }
+      return list
+    },
+
+    proxyGroupListCheap() {
+      let list = []
+      if (this.selectedCheap.length) {
+        list.push('Cheap')
+      }
+      return list
+    },
+
+    proxyGroupListAuto() {
+      let list = []
+      if (this.selectedAll.length) {
+        list.push('Auto')
+      }
+      return list
+    },
+
+    proxyGroupListONE() {
+      let list = []
+      if (this.selectedAll.length) {
+        list.push('ONE')
+      }
+      return list
+    },
+
+    proxyGroupDefaultList() {
+      let list = []
+
+      if (this.proxyGroupListHK.length) {
+        list = list.concat(this.proxyGroupListHK)
+      }
+
+      if (this.proxyGroupListUS.length) {
+        list = list.concat(this.proxyGroupListUS)
+      }
+
+      if (this.proxyGroupListTW.length) {
+        list = list.concat(this.proxyGroupListTW)
+      }
+
+      if (this.proxyGroupListSG.length) {
+        list = list.concat(this.proxyGroupListSG)
+      }
+
+      if (this.proxyGroupListJP.length) {
+        list = list.concat(this.proxyGroupListJP)
+      }
+
+      if (this.proxyGroupListKR.length) {
+        list = list.concat(this.proxyGroupListKR)
+      }
+
+      if (this.proxyGroupListEU.length) {
+        list = list.concat(this.proxyGroupListEU)
+      }
+
+      if (this.proxyGroupListCEN.length) {
+        list = list.concat(this.proxyGroupListCEN)
+      }
+
+      if (this.proxyGroupListSPEC.length) {
+        list = list.concat(this.proxyGroupListSPEC)
+      }
+
+      if (this.proxyGroupListNormal.length) {
+        list = list.concat(this.proxyGroupListNormal)
+      }
+
+      if (this.proxyGroupListCheap.length) {
+        list = list.concat(this.proxyGroupListCheap)
+      }
+
+      if (this.proxyGroupListExpensive.length) {
+        list = list.concat(this.proxyGroupListExpensive)
+      }
+
+      if (this.proxyGroupListAuto.length) {
+        list = list.concat(this.proxyGroupListAuto)
+      }
+
+      if (this.proxyGroupListONE.length) {
+        list = list.concat(this.proxyGroupListONE)
+      }
+
+      return list
+    },
+
+    proxyGroupProxy() {
+      let list = []
+      list = list.concat(this.proxyGroupDefaultList)
+
+      if (list.length) {
+        list.unshift('select')
+
+        return 'Proxy = ' + list.join(', ')
+      }
+
+      return 'Proxy = select, Direct'
+    },
+
+    proxyGroupDomestic() {
+      let list = ['select', 'Direct', 'Proxy']
+
+      return 'Domestic = ' + list.join(', ')
+    },
+
+    proxyGroupAdBlock() {
+      let list = ['select', 'TinyGIF', 'Reject', 'Domestic', 'Proxy']
+
+      if (this.selectedHkCheap.length) {
+        list.push('HK_Cheap')
+      }
+
+      return 'AdBlock = ' + list.join(', ')
+    },
+
+    proxyGroupAsianTV() {
+      let list = ['select', 'Domestic']
+
+      if (this.proxyGroupListHK.length) {
+        list = list.concat(this.proxyGroupListHK)
+      }
+
+      if (this.proxyGroupListTW.length) {
+        list = list.concat(this.proxyGroupListTW)
+      }
+
+      if (this.proxyGroupListSG.length) {
+        list = list.concat(this.proxyGroupListSG)
+      }
+
+      if (this.proxyGroupListJP.length) {
+        list = list.concat(this.proxyGroupListJP)
+      }
+
+      if (this.proxyGroupListKR.length) {
+        list = list.concat(this.proxyGroupListKR)
+      }
+
+      return 'AsianTV = ' + list.join(', ')
+    },
+
+    lineStartsWithHK() {
+      let list = ['select']
+      list = list.concat(this.proxyGroupDefaultList)
+      list.push('Domestic')
+
+      return list.join(', ')
+    },
+
+    lineStartsWithUS() {
+      let list = ['select']
+
+      if (this.proxyGroupListUS.length) {
+        list = list.concat(this.proxyGroupListUS)
+      }
+
+      if (this.proxyGroupListHK.length) {
+        list = list.concat(this.proxyGroupListHK)
+      }
+
+      if (this.proxyGroupListTW.length) {
+        list = list.concat(this.proxyGroupListTW)
+      }
+
+      if (this.proxyGroupListSG.length) {
+        list = list.concat(this.proxyGroupListSG)
+      }
+
+      if (this.proxyGroupListJP.length) {
+        list = list.concat(this.proxyGroupListJP)
+      }
+
+      if (this.proxyGroupListKR.length) {
+        list = list.concat(this.proxyGroupListKR)
+      }
+
+      if (this.proxyGroupListEU.length) {
+        list = list.concat(this.proxyGroupListEU)
+      }
+
+      if (this.proxyGroupListCEN.length) {
+        list = list.concat(this.proxyGroupListCEN)
+      }
+
+      if (this.proxyGroupListSPEC.length) {
+        list = list.concat(this.proxyGroupListSPEC)
+      }
+
+      if (this.proxyGroupListNormal.length) {
+        list = list.concat(this.proxyGroupListNormal)
+      }
+
+      if (this.proxyGroupListCheap.length) {
+        list = list.concat(this.proxyGroupListCheap)
+      }
+
+      if (this.proxyGroupListExpensive.length) {
+        list = list.concat(this.proxyGroupListExpensive)
+      }
+
+      if (this.proxyGroupListAuto.length) {
+        list = list.concat(this.proxyGroupListAuto)
+      }
+
+      if (this.proxyGroupListONE.length) {
+        list = list.concat(this.proxyGroupListONE)
+      }
+
+      list.push('Domestic')
+
+      return list.join(', ')
+    },
+
+    proxyGroupGlobalTV() {
+      return 'GlobalTV = ' + this.lineStartsWithHK
+    },
+
+    proxyGroupApple() {
+      let list = ['select', 'Domestic']
+      list = list.concat(this.proxyGroupDefaultList)
+
+      return 'Apple = ' + list.join(', ')
+    },
+
+    proxyGroupMicrosoft() {
+      let list = ['select', 'Domestic']
+      list = list.concat(this.proxyGroupDefaultList)
+
+      return 'Microsoft = ' + list.join(', ')
+    },
+
+    proxyGroupGoogle() {
+      return 'Google = ' + this.lineStartsWithHK
+    },
+
+    proxyGroupTelegram() {
+      let list = ['select']
+
+      if (this.proxyGroupListEU.length) {
+        list = list.concat(this.proxyGroupListEU)
+      }
+
+      if (this.proxyGroupListHK.length) {
+        list = list.concat(this.proxyGroupListHK)
+      }
+
+      if (this.proxyGroupListUS.length) {
+        list = list.concat(this.proxyGroupListUS)
+      }
+
+      if (this.proxyGroupListTW.length) {
+        list = list.concat(this.proxyGroupListTW)
+      }
+
+      if (this.proxyGroupListSG.length) {
+        list = list.concat(this.proxyGroupListSG)
+      }
+
+      if (this.proxyGroupListJP.length) {
+        list = list.concat(this.proxyGroupListJP)
+      }
+
+      if (this.proxyGroupListKR.length) {
+        list = list.concat(this.proxyGroupListKR)
+      }
+
+      if (this.proxyGroupListCEN.length) {
+        list = list.concat(this.proxyGroupListCEN)
+      }
+
+      if (this.proxyGroupListSPEC.length) {
+        list = list.concat(this.proxyGroupListSPEC)
+      }
+
+      if (this.proxyGroupListNormal.length) {
+        list = list.concat(this.proxyGroupListNormal)
+      }
+
+      if (this.proxyGroupListCheap.length) {
+        list = list.concat(this.proxyGroupListCheap)
+      }
+
+      if (this.proxyGroupListExpensive.length) {
+        list = list.concat(this.proxyGroupListExpensive)
+      }
+
+      if (this.proxyGroupListAuto.length) {
+        list = list.concat(this.proxyGroupListAuto)
+      }
+
+      if (this.proxyGroupListONE.length) {
+        list = list.concat(this.proxyGroupListONE)
+      }
+
+      list.push('Domestic')
+
+      return 'Telegram = ' + list.join(', ')
+    },
+
+    proxyGroupPayPal() {
+      return 'PayPal = ' + this.lineStartsWithHK
+    },
+
+    proxyGroupSteam() {
+      return 'Steam = ' + this.lineStartsWithHK
+    },
+
+    proxyGroupNetflix() {
+      return 'Netflix = ' + this.lineStartsWithHK
+    },
+
+    proxyGroupYouTube() {
+      return 'YouTube = ' + this.lineStartsWithUS
+    },
+    proxyGroupSpotify() {
+      return 'Spotify = ' + this.lineStartsWithUS
+    },
+    proxyGroupDisney() {
+      return 'YouTube = ' + this.lineStartsWithUS
+    },
+
+    proxyGroupSpeedTest() {
+      let list = ['select', 'Direct']
+      list = list.concat(this.selectedAll)
+
+      return 'SpeedTest = ' + list.join(', ')
+    },
+
+    proxyGroupHkIepl() {
+      if (this.selectedHkIepl.length) {
+        return (
+          'HK_IEPL = ' +
+          ['url-test'].concat(this.selectedHkIepl, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupHkBgp() {
+      if (this.selectedHkBgp.length) {
+        return (
+          'HK_BGP = ' +
+          ['url-test'].concat(this.selectedHkBgp, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupHkNormal() {
+      if (this.selectedHkNormal.length) {
+        return (
+          'HK_Normal = ' +
+          ['url-test'].concat(this.selectedHkNormal, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupHkCheap() {
+      if (this.selectedHkCheap.length) {
+        return (
+          'HK_Cheap = ' +
+          ['url-test'].concat(this.selectedHkCheap, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupUsIeplBgp() {
+      if (this.selectedUsIeplBgp.length) {
+        return (
+          'US_IEPL_BGP = ' +
+          ['url-test'].concat(this.selectedUsIeplBgp, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupUsNormal() {
+      if (this.selectedUsNormal.length) {
+        return (
+          'US_Normal = ' +
+          ['url-test'].concat(this.selectedUsNormal, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupUsCheap() {
+      if (this.selectedUsCheap.length) {
+        return (
+          'US_Cheap = ' +
+          ['url-test'].concat(this.selectedUsCheap, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupTwIeplBgp() {
+      if (this.selectedTwIeplBgp.length) {
+        return (
+          'TW_IEPL_BGP = ' +
+          ['url-test'].concat(this.selectedTwIeplBgp, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupTwNormal() {
+      if (this.selectedTwNormal.length) {
+        return (
+          'TW_Normal = ' +
+          ['url-test'].concat(this.selectedTwNormal, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupTwCheap() {
+      if (this.selectedTwCheap.length) {
+        return (
+          'TW_Cheap = ' +
+          ['url-test'].concat(this.selectedTwCheap, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupSgIeplBgp() {
+      if (this.selectedSgIeplBgp.length) {
+        return (
+          'SG_IEPL_BGP = ' +
+          ['url-test'].concat(this.selectedSgIeplBgp, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupSgNormal() {
+      if (this.selectedSgNormal.length) {
+        return (
+          'SG_Normal = ' +
+          ['url-test'].concat(this.selectedSgNormal, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupSgCheap() {
+      if (this.selectedSgCheap.length) {
+        return (
+          'SG_Cheap = ' +
+          ['url-test'].concat(this.selectedSgCheap, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupJpIeplBgp() {
+      if (this.selectedJpIeplBgp.length) {
+        return (
+          'JP_IEPL_BGP = ' +
+          ['url-test'].concat(this.selectedJpIeplBgp, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupJpNormal() {
+      if (this.selectedJpNormal.length) {
+        return (
+          'JP_Normal = ' +
+          ['url-test'].concat(this.selectedJpNormal, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupJpCheap() {
+      if (this.selectedJpCheap.length) {
+        return (
+          'JP_Cheap = ' +
+          ['url-test'].concat(this.selectedJpCheap, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupKr() {
+      if (this.selectedKr.length) {
+        return (
+          'KR = ' + ['url-test'].concat(this.selectedKr, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupEu() {
+      if (this.selectedEu.length) {
+        return (
+          'EU = ' + ['url-test'].concat(this.selectedEu, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupSpec() {
+      if (this.selectedSpec.length) {
+        return (
+          'SPEC = ' +
+          ['url-test'].concat(this.selectedSpec, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupNormal() {
+      if (this.selectedNormal.length) {
+        return (
+          'Normal = ' +
+          ['url-test'].concat(this.selectedNormal, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupAuto() {
+      if (this.selectedAll.length) {
+        return (
+          'Normal = ' +
+          ['url-test'].concat(this.selectedAll, URL_TEST).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupCen() {
+      if (this.selectedCen.length) {
+        return 'CEN = ' + ['select'].concat(this.selectedCen).join(', ')
+      }
+
+      return null
+    },
+
+    proxyGroupExpensive() {
+      if (this.selectedExpensive.length) {
+        return (
+          'Expensive = ' + ['select'].concat(this.selectedExpensive).join(', ')
+        )
+      }
+
+      return null
+    },
+
+    proxyGroupOne() {
+      if (this.selectedAll.length) {
+        return 'ONE = ' + ['select'].concat(this.selectedAll).join(', ')
+      }
+
+      return null
+    },
+
+    /**
+     * Select Options
+     */
     options() {
       let sourceList = []
 
-      this.source.split('\n').forEach(function(line) {
+      this.source.split('\n').forEach(function (line) {
         line = line.trim()
         if (line) {
           const title = line.split(',')[0].split('=')[0].trim()
 
-          sourceList.push({
-            text: title,
-            value: title
-          })
+          sourceList.push(title)
         }
       })
 
@@ -548,18 +1662,16 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('港') !== -1
-          &&
-          this.options[i].text.indexOf('IEPL') !== -1
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('港') !== -1 &&
+          this.options[i].indexOf('IEPL') !== -1 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedHkIepl.push(this.options[i].text)
         }
       }
+
+      this.selectedHkIepl = options.slice()
 
       return options
     },
@@ -569,18 +1681,16 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('港') !== -1
-          &&
-          this.options[i].text.indexOf('BGP') !== -1
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('港') !== -1 &&
+          this.options[i].indexOf('BGP') !== -1 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedHkBgp.push(this.options[i].text)
         }
       }
+
+      this.selectedHkBgp = options.slice()
 
       return options
     },
@@ -590,22 +1700,18 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('港') !== -1
-          &&
-          this.options[i].text.indexOf('IEPL') < 0
-          &&
-          this.options[i].text.indexOf('BGP') < 0
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('港') !== -1 &&
+          this.options[i].indexOf('IEPL') < 0 &&
+          this.options[i].indexOf('BGP') < 0 &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedHkNormal.push(this.options[i].text)
         }
       }
+
+      this.selectedHkNormal = options.slice()
 
       return options
     },
@@ -615,16 +1721,15 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('港') !== -1
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_CHEAP) !== -1
+          this.options[i].indexOf('港') !== -1 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_CHEAP) !== -1
         ) {
           options.push(this.options[i])
-          this.selectedHkCheap.push(this.options[i].text)
         }
       }
+
+      this.selectedHkCheap = options.slice()
 
       return options
     },
@@ -636,22 +1741,17 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('美') !== -1
-          &&
-          (
-            this.options[i].text.indexOf('IEPL') !== -1
-            ||
-            this.options[i].text.indexOf('BGP') !== -1
-          )
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('美') !== -1 &&
+          (this.options[i].indexOf('IEPL') !== -1 ||
+            this.options[i].indexOf('BGP') !== -1) &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedUsIeplBgp.push(this.options[i].text)
         }
       }
+
+      this.selectedUsIeplBgp = options.slice()
 
       return options
     },
@@ -661,22 +1761,18 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('美') !== -1
-          &&
-          this.options[i].text.indexOf('IEPL') < 0
-          &&
-          this.options[i].text.indexOf('BGP') < 0
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('美') !== -1 &&
+          this.options[i].indexOf('IEPL') < 0 &&
+          this.options[i].indexOf('BGP') < 0 &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedUsNormal.push(this.options[i].text)
         }
       }
+
+      this.selectedUsNormal = options.slice()
 
       return options
     },
@@ -686,16 +1782,15 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('美') !== -1
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_CHEAP) !== -1
+          this.options[i].indexOf('美') !== -1 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_CHEAP) !== -1
         ) {
           options.push(this.options[i])
-          this.selectedUsCheap.push(this.options[i].text)
         }
       }
+
+      this.selectedUsCheap = options.slice()
 
       return options
     },
@@ -707,22 +1802,17 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('台') !== -1
-          &&
-          (
-            this.options[i].text.indexOf('IEPL') !== -1
-            ||
-            this.options[i].text.indexOf('BGP') !== -1
-          )
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('台') !== -1 &&
+          (this.options[i].indexOf('IEPL') !== -1 ||
+            this.options[i].indexOf('BGP') !== -1) &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedTwIeplBgp.push(this.options[i].text)
         }
       }
+
+      this.selectedTwIeplBgp = options.slice()
 
       return options
     },
@@ -732,22 +1822,36 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('台') !== -1
-          &&
-          this.options[i].text.indexOf('IEPL') < 0
-          &&
-          this.options[i].text.indexOf('BGP') < 0
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('台') !== -1 &&
+          this.options[i].indexOf('IEPL') < 0 &&
+          this.options[i].indexOf('BGP') < 0 &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedTwNormal.push(this.options[i].text)
         }
       }
+
+      this.selectedTwNormal = options.slice()
+
+      return options
+    },
+    optionsTwCheap() {
+      this.selectedTwCheap = []
+
+      let options = []
+      for (let i = 0; i < this.options.length; i++) {
+        if (
+          this.options[i].indexOf('台') !== -1 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_CHEAP) !== -1
+        ) {
+          options.push(this.options[i])
+        }
+      }
+
+      this.selectedTwCheap = options.slice()
 
       return options
     },
@@ -759,22 +1863,17 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('新') !== -1
-          &&
-          (
-            this.options[i].text.indexOf('IEPL') !== -1
-            ||
-            this.options[i].text.indexOf('BGP') !== -1
-          )
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('新') !== -1 &&
+          (this.options[i].indexOf('IEPL') !== -1 ||
+            this.options[i].indexOf('BGP') !== -1) &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedSgIeplBgp.push(this.options[i].text)
         }
       }
+
+      this.selectedSgIeplBgp = options.slice()
 
       return options
     },
@@ -784,22 +1883,36 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('新') !== -1
-          &&
-          this.options[i].text.indexOf('IEPL') < 0
-          &&
-          this.options[i].text.indexOf('BGP') < 0
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('新') !== -1 &&
+          this.options[i].indexOf('IEPL') < 0 &&
+          this.options[i].indexOf('BGP') < 0 &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedSgNormal.push(this.options[i].text)
         }
       }
+
+      this.selectedSgNormal = options.slice()
+
+      return options
+    },
+    optionsSgCheap() {
+      this.selectedSgCheap = []
+
+      let options = []
+      for (let i = 0; i < this.options.length; i++) {
+        if (
+          this.options[i].indexOf('新') !== -1 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_CHEAP) !== -1
+        ) {
+          options.push(this.options[i])
+        }
+      }
+
+      this.selectedSgCheap = options.slice()
 
       return options
     },
@@ -811,22 +1924,17 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('日') !== -1
-          &&
-          (
-            this.options[i].text.indexOf('IEPL') !== -1
-            ||
-            this.options[i].text.indexOf('BGP') !== -1
-          )
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('日') !== -1 &&
+          (this.options[i].indexOf('IEPL') !== -1 ||
+            this.options[i].indexOf('BGP') !== -1) &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedJpIeplBgp.push(this.options[i].text)
         }
       }
+
+      this.selectedJpIeplBgp = options.slice()
 
       return options
     },
@@ -836,22 +1944,36 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('日') !== -1
-          &&
-          this.options[i].text.indexOf('IEPL') < 0
-          &&
-          this.options[i].text.indexOf('BGP') < 0
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('日') !== -1 &&
+          this.options[i].indexOf('IEPL') < 0 &&
+          this.options[i].indexOf('BGP') < 0 &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedJpNormal.push(this.options[i].text)
         }
       }
+
+      this.selectedJpNormal = options.slice()
+
+      return options
+    },
+    optionsJpCheap() {
+      this.selectedJpCheap = []
+
+      let options = []
+      for (let i = 0; i < this.options.length; i++) {
+        if (
+          this.options[i].indexOf('日') !== -1 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_CHEAP) !== -1
+        ) {
+          options.push(this.options[i])
+        }
+      }
+
+      this.selectedJpCheap = options.slice()
 
       return options
     },
@@ -863,18 +1985,16 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('韩') !== -1
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('韩') !== -1 &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedKr.push(this.options[i].text)
         }
       }
+
+      this.selectedKr = options.slice()
 
       return options
     },
@@ -886,25 +2006,18 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          (
-            this.options[i].text.indexOf('德') !== -1
-            ||
-            this.options[i].text.indexOf('英') !== -1
-            ||
-            this.options[i].text.indexOf('法') !== -1
-          )
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
-
+          (this.options[i].indexOf('德') !== -1 ||
+            this.options[i].indexOf('英') !== -1 ||
+            this.options[i].indexOf('法') !== -1) &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedEu.push(this.options[i].text)
         }
       }
+
+      this.selectedEu = options.slice()
 
       return options
     },
@@ -915,13 +2028,12 @@ export default {
 
       let options = []
       for (let i = 0; i < this.options.length; i++) {
-        if (
-          this.options[i].text.indexOf('CEN') !== -1
-        ) {
+        if (this.options[i].indexOf('CEN') !== -1) {
           options.push(this.options[i])
-          this.selectedCen.push(this.options[i].text)
         }
       }
+
+      this.selectedCen = options.slice()
 
       return options
     },
@@ -932,13 +2044,28 @@ export default {
 
       let options = []
       for (let i = 0; i < this.options.length; i++) {
-        if (
-          this.options[i].text.search(PATT_EXPENSIVE) !== -1
-        ) {
+        if (this.options[i].search(RE_EXPENSIVE) !== -1) {
           options.push(this.options[i])
-          this.selectedExpensive.push(this.options[i].text)
         }
       }
+
+      this.selectedExpensive = options.slice()
+
+      return options
+    },
+
+    // Cheap
+    optionsCheap() {
+      this.selectedCheap = []
+
+      let options = []
+      for (let i = 0; i < this.options.length; i++) {
+        if (this.options[i].search(RE_CHEAP) !== -1) {
+          options.push(this.options[i])
+        }
+      }
+
+      this.selectedCheap = options.slice()
 
       return options
     },
@@ -950,28 +2077,21 @@ export default {
       let options = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('IEPL') < 0
-          &&
-          this.options[i].text.indexOf('BGP') < 0
-          &&
-          this.options[i].text.indexOf('CEN') < 0
-          &&
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.indexOf('俄') < 0
-          &&
-          this.options[i].text.indexOf('印') < 0
-          &&
-          this.options[i].text.indexOf('菲') < 0
-          &&
-          this.options[i].text.indexOf('澳大利亚') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('IEPL') < 0 &&
+          this.options[i].indexOf('BGP') < 0 &&
+          this.options[i].indexOf('CEN') < 0 &&
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].indexOf('俄') < 0 &&
+          this.options[i].indexOf('印') < 0 &&
+          this.options[i].indexOf('菲') < 0 &&
+          this.options[i].indexOf('澳大利亚') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
           options.push(this.options[i])
-          this.selectedNormal.push(this.options[i].text)
         }
       }
+
+      this.selectedNormal = options.slice()
 
       return options
     },
@@ -983,39 +2103,35 @@ export default {
       let a = []
       let b = []
       let c = []
-      let selectedA = []
-      let selectedB = []
-      let selectedC = []
+      let list = []
       for (let i = 0; i < this.options.length; i++) {
         if (
-          this.options[i].text.indexOf('->') < 0
-          &&
-          this.options[i].text.indexOf('俄') < 0
-          &&
-          this.options[i].text.indexOf('印') < 0
-          &&
-          this.options[i].text.indexOf('菲') < 0
-          &&
-          this.options[i].text.indexOf('澳大利亚') < 0
-          &&
-          this.options[i].text.search(PATT_EXPENSIVE) < 0
+          this.options[i].indexOf('->') < 0 &&
+          this.options[i].indexOf('俄') < 0 &&
+          this.options[i].indexOf('印') < 0 &&
+          this.options[i].indexOf('菲') < 0 &&
+          this.options[i].indexOf('澳大利亚') < 0 &&
+          this.options[i].search(RE_EXPENSIVE) < 0
         ) {
-          if (this.options[i].text.indexOf('IEPL') !== -1) {
+          if (this.options[i].indexOf('IEPL') !== -1) {
             a.push(this.options[i])
-            selectedA.push(this.options[i].text)
-          } else if (this.options[i].text.indexOf('BGP') !== -1) {
+          } else if (this.options[i].indexOf('BGP') !== -1) {
             b.push(this.options[i])
-            selectedB.push(this.options[i].text)
           } else {
             c.push(this.options[i])
-            selectedC.push(this.options[i].text)
           }
         }
       }
 
-      this.selectedAll = selectedA.concat(selectedB, selectedC)
+      // a.sort()
+      // b.sort()
+      // c.sort()
 
-      return a.concat(b, c)
+      list = a.concat(b, c)
+
+      this.selectedAll = list
+
+      return list
     },
 
     // SPEC
@@ -1024,16 +2140,114 @@ export default {
 
       let options = []
       for (let i = 0; i < this.options.length; i++) {
-        if (this.options[i].text.indexOf('->') !== -1) {
+        if (this.options[i].indexOf('->') !== -1) {
           options.push(this.options[i])
-          this.selectedSpec.push(this.options[i].text)
         }
       }
 
+      this.selectedSpec = options.slice()
+
       return options
     },
+  },
+  methods: {
+    // HK
+    toggleSelectedHkIeplAll(checked) {
+      this.selectedHkIepl = checked ? this.optionsHkIepl.slice() : []
+    },
+    toggleSelectedHkBgpAll(checked) {
+      this.selectedHkBgp = checked ? this.optionsHkBgp.slice() : []
+    },
+    toggleSelectedHkNormalAll(checked) {
+      this.selectedHkNormal = checked ? this.optionsHkNormal.slice() : []
+    },
+    toggleSelectedHkCheapAll(checked) {
+      this.selectedHkCheap = checked ? this.optionsHkCheap.slice() : []
+    },
 
+    // US
+    toggleSelectedUsIeplBgpAll(checked) {
+      this.selectedUsIeplBgp = checked ? this.optionsUsIeplBgp.slice() : []
+    },
+    toggleSelectedUsNormalAll(checked) {
+      this.selectedUsNormal = checked ? this.optionsUsNormal.slice() : []
+    },
+    toggleSelectedUsCheapAll(checked) {
+      this.selectedUsCheap = checked ? this.optionsUsCheap.slice() : []
+    },
 
-  }
+    // TW
+    toggleSelectedTwIeplBgpAll(checked) {
+      this.selectedTwIeplBgp = checked ? this.optionsTwIeplBgp.slice() : []
+    },
+    toggleSelectedTwNormalAll(checked) {
+      this.selectedTwNormal = checked ? this.optionsTwNormal.slice() : []
+    },
+    toggleSelectedTwCheapAll(checked) {
+      this.selectedTwCheap = checked ? this.optionsTwCheap.slice() : []
+    },
+
+    // SG
+    toggleSelectedSgIeplBgpAll(checked) {
+      this.selectedSgIeplBgp = checked ? this.optionsSgIeplBgp.slice() : []
+    },
+    toggleSelectedSgNormalAll(checked) {
+      this.selectedSgNormal = checked ? this.optionsSgNormal.slice() : []
+    },
+    toggleSelectedSgCheapAll(checked) {
+      this.selectedSgCheap = checked ? this.optionsSgCheap.slice() : []
+    },
+
+    // JP
+    toggleSelectedJpIeplBgpAll(checked) {
+      this.selectedJpIeplBgp = checked ? this.optionsJpIeplBgp.slice() : []
+    },
+    toggleSelectedJpNormalAll(checked) {
+      this.selectedJpNormal = checked ? this.optionsJpNormal.slice() : []
+    },
+    toggleSelectedJpCheapAll(checked) {
+      this.selectedJpCheap = checked ? this.optionsJpCheap.slice() : []
+    },
+
+    // KR
+    toggleSelectedKrAll(checked) {
+      this.selectedKr = checked ? this.optionsKr.slice() : []
+    },
+
+    // EU
+    toggleSelectedEuAll(checked) {
+      this.selectedEu = checked ? this.optionsEu.slice() : []
+    },
+
+    // CEN
+    toggleSelectedCenAll(checked) {
+      this.selectedCen = checked ? this.optionsCen.slice() : []
+    },
+
+    // Expensive
+    toggleSelectedExpensiveAll(checked) {
+      this.selectedExpensive = checked ? this.optionsExpensive.slice() : []
+    },
+
+    // Cheap
+    toggleSelectedCheapAll(checked) {
+      this.selectedCheap = checked ? this.optionsCheap.slice() : []
+    },
+
+    // SPEC
+    toggleSelectedSpecAll(checked) {
+      this.selectedSpec = checked ? this.optionsSpec.slice() : []
+    },
+
+    // Normal
+    toggleSelectedNormalAll(checked) {
+      this.selectedNormal = checked ? this.optionsNormal.slice() : []
+    },
+
+    // ALL
+    toggleSelectedAllAll(checked) {
+      this.selectedAll = checked ? this.optionsAll.slice() : []
+    },
+  },
 }
 </script>
