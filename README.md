@@ -55,6 +55,10 @@ https://12345.blog/tools/surge/
   - [x] Script `洞主规则`
   - [x] MITM `洞主规则，替换了个人使用的证书`
 
+#### 如果有朋友有兴趣想优化它
+
+在这个文件里 [pages/surge.vue](tree/master/pages/surge.vue)
+
 
 ## 欢迎协作
 
