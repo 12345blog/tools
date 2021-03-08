@@ -20,6 +20,6 @@
     "eslint-plugin-prettier": "^3.3.1",
     "prettier": "^2.2.1",
     "stylus": "^0.54.8",
-    "stylus-loader": "^4.3.3"
+    "stylus-loader": "^5.0.0"
   }
 }
